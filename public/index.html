@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Crossword Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h1>Podcast Crossword Generator</h1>
+            <textarea id="transcript-input" 
+                      placeholder="Paste your podcast transcript here..."
+                      rows="10"></textarea>
+            <button id="generate-btn">Generate Crossword</button>
+        </div>
+        
+        <div class="crossword-section">
+            <div id="crossword-grid"></div>
+            <div id="clues">
+                <div id="across">
+                    <h3>Across</h3>
+                    <ul id="across-clues"></ul>
+                </div>
+                <div id="down">
+                    <h3>Down</h3>
+                    <ul id="down-clues"></ul>
+                </div>
+            </div>
+            <div class="crossword-controls">
+                <button id="check-puzzle-btn">Check Puzzle</button>
+                <button id="reveal-answer-btn">Reveal Answer</button>
+            </div>
+        </div>
+    </div>
+    <div id="completion-modal" class="completion-modal" style="display: none;">
+        <div class="modal-content">
+            <h2>🎉 Congratulations! You completed the crossword!</h2>
+            <button id="close-modal-btn">Close</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

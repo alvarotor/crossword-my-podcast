@@ -1,0 +1,128 @@
+/* Mobile-first responsive design */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.crossword-section {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .crossword-section {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.crossword-cell {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.crossword-cell.active {
+    background-color: #f0f8ff;
+    border-color: #007bff;
+}
+
+.crossword-cell.correct {
+    background-color: #d4edda; /* Green for correct answers */
+}
+
+.crossword-cell.incorrect {
+    background-color: #f8d7da; /* Red for incorrect answers */
+}
+
+.crossword-controls {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.crossword-controls button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+}
+
+.crossword-controls button:hover {
+    background-color: #0056b3;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+    .clues.collapsed .clue-list {
+        display: none;
+    }
+    
+    .clues-toggle {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .crossword-cell {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+}
+
+.completion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+}
+
+.modal-content button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
+}

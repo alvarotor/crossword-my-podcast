@@ -1,0 +1,34 @@
+{
+  "name": "crossword-microservice",
+  "version": "1.0.0",
+  "description": "Microservice to generate crossword puzzles from podcast transcripts",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && cp -r public dist/",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev src/index.ts"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.20.0",
+    "axios": "1.8.4",
+    "babel-runtime": "^6.26.0",
+    "cors": "2.8.5",
+    "crossword-layout-generator": "0.1.1",
+    "express": "4.21.2",
+    "keyword-extractor": "0.0.28",
+    "natural": "^8.0.1",
+    "rapid-automated-keyword-extraction": "1.0.1",
+    "stopword": "^3.1.4",
+    "wordnet-db": "^3.1.14"
+  },
+  "devDependencies": {
+    "@types/axios": "0.9.36",
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.1",
+    "@types/natural": "5.1.5",
+    "@types/node": "22.13.14",
+    "@types/stopword": "2.0.3",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.8.2"
+  }
+}
