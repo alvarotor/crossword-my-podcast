@@ -34,9 +34,14 @@ export class ClueGenerator {
     const sentences = context.split(/[.!?]/).map(s => s.trim());
     const sentence = sentences.find(s => s.toLowerCase().includes(word.toLowerCase()));
     if (sentence) {
-      return sentence.replace(new RegExp(`\\b${word}\\b`, 'gi'), '_____');
+      return this.createClueFromSentence(sentence, word);
     }
     return "";
+  }
+
+  private createClueFromSentence(sentence: string, word: string): string {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // Match word in all forms
+    return sentence.replace(regex, '_____') + ` (${word.length} letters)`; // Append enumeration
   }
 
   private getWordNetClue(word: string): Promise<string | null> {
@@ -95,7 +100,7 @@ export class ClueGenerator {
     try {
       const response = await axios.get<{ meanings: { definitions: { definition: string }[] }[] }[]>(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
       if (Array.isArray(response.data) && response.data.length > 0) {
-        const definitions = response.data[0].meanings.flatMap((meaning: any) => meaning.definitions.map((def: any) => def.definition));
+        const definitions = response.data[0].meanings.flatMap(meaning => meaning.definitions.map(def => def.definition));
         return definitions.length > 0 ? definitions[0] : null;
       }
     } catch (error) {

@@ -37,13 +37,11 @@ export function generateCrosswordLayout(wordsWithClues: CrosswordWord[]): Crossw
             const placedWords = new Set(layout.result.map(word => word.answer.toLowerCase()));
             const missingWords = wordsWithClues.filter(word => !placedWords.has(word.answer.toLowerCase()));
             if (missingWords.length > 0) {
-                throw new Error(`Some words could not be placed: ${missingWords.map(w => w.answer).join(', ')}`);
+                console.warn(`Some words could not be placed: ${missingWords.map(w => w.answer).join(', ')}`);
             }
 
-            // Handle multi-word answers by replacing spaces with underscores
-            layout.result.forEach(word => {
-                word.answer = word.answer.replace(/\s+/g, '_');
-            });
+            // Dynamically adjust word list if some words cannot fit
+            wordsWithClues = wordsWithClues.filter(word => placedWords.has(word.answer.toLowerCase()));
         } catch (error) {
             console.warn(`Layout generation failed on attempt ${attempts + 1}:`, error);
             wordsWithClues.pop(); // Remove the last word and retry

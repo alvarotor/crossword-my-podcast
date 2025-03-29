@@ -54,7 +54,19 @@ export async function extractKeywords(text: string, maxKeywords: number = config
     });
   }
 
-  return wordScores
-    .sort((a, b) => b.score - a.score)
+  // Handle multi-word answers by replacing spaces with underscores
+  wordScores.forEach(keyword => {
+    keyword.word = keyword.word.replace(/\s+/g, '_');
+  });
+
+  // Manual pruning: Remove duplicates and prioritize single-word keywords
+  const uniqueKeywords = Array.from(new Set(wordScores.map(k => k.word)));
+  const prunedKeywords = uniqueKeywords
+    .filter(word => word.split('_').length === 1) // Prioritize single-word keywords
     .slice(0, maxKeywords);
+
+  return prunedKeywords.map(word => ({
+    word,
+    score: wordScores.find(k => k.word === word)?.score || 0
+  }));
 }

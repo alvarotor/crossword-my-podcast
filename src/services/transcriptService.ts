@@ -7,6 +7,8 @@ export function preprocessTranscript(transcript: string): string {
     .replace(/\(\d+:\d+\)/g, '')
     .replace(/\([^)]*\)/g, '')
     .replace(/\[\d+:\d+\]/g, '')
+    // Remove filler words like "um", "uh"
+    .replace(/\b(um|uh|like|you know|so)\b/g, '')
     // Clean up extra whitespace
     .replace(/\s+/g, ' ')
     .trim();

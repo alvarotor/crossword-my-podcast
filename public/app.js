@@ -7,6 +7,10 @@ class CrosswordApp {
         document.getElementById('check-puzzle-btn').addEventListener('click', () => this.checkPuzzle());
         document.getElementById('reveal-answer-btn').addEventListener('click', () => this.revealAnswer());
         document.getElementById('close-modal-btn').addEventListener('click', () => this.closeCompletionModal());
+
+        // Add responsive design adjustments
+        window.addEventListener('resize', () => this.adjustGridScale());
+        this.adjustGridScale();
     }
 
     async generateCrossword() {
@@ -73,14 +77,14 @@ class CrosswordApp {
                 across: crosswordData.result.filter(w => w.orientation === 'across').map(w => ({
                     number: w.position,
                     clue: `${w.clue} (${w.answer.length} letters)`,
-                    answer: w.answer,
+                    answer: w.answer.replace(/_/g, ' '), // Replace underscores with spaces
                     row: w.starty,
                     col: w.startx
                 })),
                 down: crosswordData.result.filter(w => w.orientation === 'down').map(w => ({
                     number: w.position,
                     clue: `${w.clue} (${w.answer.length} letters)`,
-                    answer: w.answer,
+                    answer: w.answer.replace(/_/g, ' '), // Replace underscores with spaces
                     row: w.starty,
                     col: w.startx
                 }))
@@ -120,6 +124,15 @@ class CrosswordApp {
 
     showError(message) {
         alert(message);
+    }
+
+    adjustGridScale() {
+        const container = document.getElementById('crossword-grid');
+        if (window.innerWidth < 768) {
+            container.style.transform = 'scale(0.8)'; // Scale down for smaller screens
+        } else {
+            container.style.transform = 'scale(1)';
+        }
     }
 }
 
