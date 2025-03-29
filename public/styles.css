@@ -60,6 +60,21 @@
     background-color: #0056b3;
 }
 
+#clues {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#clues ul {
+    list-style: none;
+    padding: 0;
+}
+
+#clues li {
+    margin-bottom: 0.5rem;
+}
+
 /* Mobile optimizations */
 @media (max-width: 767px) {
     .clues.collapsed .clue-list {
@@ -77,6 +92,10 @@
         width: 25px;
         height: 25px;
         font-size: 14px;
+    }
+
+    #clues {
+        flex-direction: column;
     }
 }
 

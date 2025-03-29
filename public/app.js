@@ -43,7 +43,27 @@ class CrosswordApp {
             data: this.formatDataForRenderer(crosswordData)
         });
 
+        // Render clues with numbering
+        this.renderClues(crosswordData.result);
+
         this.crossword.on('clueComplete', () => this.checkCompletion());
+    }
+
+    renderClues(words) {
+        const acrossClues = document.getElementById('across-clues');
+        const downClues = document.getElementById('down-clues');
+        acrossClues.innerHTML = '';
+        downClues.innerHTML = '';
+
+        words.forEach(word => {
+            const clueElement = document.createElement('li');
+            clueElement.textContent = `${word.position}. ${word.clue}`;
+            if (word.orientation === 'across') {
+                acrossClues.appendChild(clueElement);
+            } else if (word.orientation === 'down') {
+                downClues.appendChild(clueElement);
+            }
+        });
     }
 
     formatDataForRenderer(crosswordData) {

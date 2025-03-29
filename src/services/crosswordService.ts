@@ -39,6 +39,11 @@ export function generateCrosswordLayout(wordsWithClues: CrosswordWord[]): Crossw
             if (missingWords.length > 0) {
                 throw new Error(`Some words could not be placed: ${missingWords.map(w => w.answer).join(', ')}`);
             }
+
+            // Handle multi-word answers by replacing spaces with underscores
+            layout.result.forEach(word => {
+                word.answer = word.answer.replace(/\s+/g, '_');
+            });
         } catch (error) {
             console.warn(`Layout generation failed on attempt ${attempts + 1}:`, error);
             wordsWithClues.pop(); // Remove the last word and retry

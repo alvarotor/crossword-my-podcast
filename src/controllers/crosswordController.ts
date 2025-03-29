@@ -8,9 +8,17 @@ export const generateCrossword = async (req: Request, res: Response) => {
   try {
     const { transcript } = req.body;
 
+    if (!transcript || typeof transcript !== 'string' || transcript.trim().length < 50) {
+      return res.status(400).json({ error: 'Transcript must be a valid string with at least 50 characters.' });
+    }
+
     const cleanedTranscript = preprocessTranscript(transcript);
     const keywords = await extractKeywords(cleanedTranscript);
-    
+
+    if (keywords.length === 0) {
+      return res.status(400).json({ error: 'No keywords could be extracted from the transcript.' });
+    }
+
     const clueGenerator = new ClueGenerator();
     const wordsWithClues = await Promise.all(
       keywords.map(async (keyword) => ({
@@ -26,6 +34,11 @@ export const generateCrossword = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Error generating crossword:', error);
-    res.status(500).json({ error: 'An error occurred while generating the crossword.' });
+
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'An unexpected error occurred while generating the crossword.' });
+    }
   }
 };
