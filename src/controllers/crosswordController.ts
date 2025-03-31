@@ -1,10 +1,30 @@
 import { Response } from 'express';
-import { preprocessTranscript } from '../services/transcriptService';
-import { extractKeywords } from '../services/keywordService';
-import { generateCrosswordLayout } from '../services/crosswordService';
-import { ClueGenerator } from '../services/clueGenerator';
+import { generateLayout } from 'crossword-layout-generator';
+import { extractKeywords } from '../utils/keywordExtractor';
+import { generateClues } from '../utils/clueGenerator';
+import { CrosswordLayout } from 'crossword-layout-generator';
 
-export const generateCrossword = async (req: string, res: Response) => {
+export async function generateCrossword(transcript: string): Promise<CrosswordLayout> {
+    const keywords = await extractKeywords(transcript);
+
+    if (keywords.length === 0) {
+        throw new Error('No keywords could be extracted from the transcript.');
+    }
+
+    const wordsWithClues = await generateClues(keywords, transcript);
+    const layout = generateLayout(wordsWithClues);
+
+    // Return the layout directly since it already has the correct structure
+    return {
+        table: layout.table,
+        result: layout.result,
+        rows: layout.rows,
+        cols: layout.cols,
+        table_string: layout.table_string
+    };
+}
+
+export const generateCrosswordHandler = async (req: string, res: Response) => {
   try {
     const transcript: string = req;
 
@@ -12,26 +32,9 @@ export const generateCrossword = async (req: string, res: Response) => {
       return res.status(400).json({ error: 'Transcript must be a valid string with at least 50 characters.' });
     }
 
-    const cleanedTranscript = preprocessTranscript(transcript);
-    const keywords = await extractKeywords(cleanedTranscript);
+    const crossword = await generateCrossword(transcript);
 
-    if (keywords.length === 0) {
-      return res.status(400).json({ error: 'No keywords could be extracted from the transcript.' });
-    }
-
-    const clueGenerator = new ClueGenerator();
-    const wordsWithClues = await Promise.all(
-      keywords.map(async (keyword) => ({
-        answer: keyword.word,
-        clue: await clueGenerator.generateClue(keyword.word, cleanedTranscript)
-      }))
-    );
-
-    const crosswordLayout = generateCrosswordLayout(wordsWithClues);
-
-    res.status(200).json({
-      crossword: crosswordLayout
-    });
+    res.status(200).json({ crossword });
   } catch (error) {
     console.error('Error generating crossword:', error);
 
