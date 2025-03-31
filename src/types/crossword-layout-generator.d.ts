@@ -32,8 +32,9 @@ declare module 'crossword-layout-generator' {
         minWords?: number;
     }
 
-    export class CrosswordLayoutGenerator {
-        constructor(words: CrosswordWord[]);
-        getLayout(options?: LayoutOptions): CrosswordLayout;
-    }
+    const generator: {
+        generateLayout(words: CrosswordWord[], options?: LayoutOptions): CrosswordLayout;
+    };
+    
+    export = generator;
 }

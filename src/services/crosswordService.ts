@@ -1,4 +1,4 @@
-import { CrosswordLayoutGenerator, CrosswordWord } from 'crossword-layout-generator';
+import generator = require('crossword-layout-generator');
 import { config } from '../config';
 
 interface CrosswordLayout {
@@ -15,6 +15,11 @@ interface CrosswordLayout {
     cols: number;
 }
 
+interface CrosswordWord {
+    answer: string;
+    clue: string;
+}
+
 export function generateCrosswordLayout(wordsWithClues: CrosswordWord[]): CrosswordLayout {
     let layout: CrosswordLayout | null = null;
     let attempts = 0;
@@ -27,8 +32,7 @@ export function generateCrosswordLayout(wordsWithClues: CrosswordWord[]): Crossw
 
     while (!layout && attempts < 5) {
         try {
-            const generator = new CrosswordLayoutGenerator(normalizedWords);
-            const generatedLayout = generator.getLayout({
+            const generatedLayout = generator.generateLayout(normalizedWords, {
                 maxAttempts: 1000,
                 preferHorizontal: 0.7,
                 maxGridSize: config.crossword.gridSize.max,
@@ -99,21 +103,31 @@ export function generateCrosswordLayout(wordsWithClues: CrosswordWord[]): Crossw
 }
 
 function countIntersections(layout: CrosswordLayout): number {
+    if (!layout || !layout.table || layout.rows <= 0 || layout.cols <= 0) {
+        return 0;
+    }
+
     let intersections = 0;
     const grid = Array(layout.rows).fill(null)
         .map(() => Array(layout.cols).fill(0));
 
     // Mark all cells used by words
     layout.result.forEach(word => {
+        if (!word.answer || !word.startx || !word.starty) return;
+        
         const dx = word.orientation === 'across' ? 1 : 0;
         const dy = word.orientation === 'down' ? 1 : 0;
         
         for (let i = 0; i < word.answer.length; i++) {
             const x = word.startx + (dx * i);
             const y = word.starty + (dy * i);
-            grid[y][x]++;
-            if (grid[y][x] > 1) {
-                intersections++;
+            
+            // Check bounds before accessing grid
+            if (x >= 0 && x < layout.cols && y >= 0 && y < layout.rows) {
+                grid[y][x]++;
+                if (grid[y][x] > 1) {
+                    intersections++;
+                }
             }
         }
     });
