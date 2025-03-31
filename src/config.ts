@@ -31,6 +31,5 @@ export const config = {
       min: parseInt(process.env.KEYWORD_MIN_LENGTH || '3', 10),
       max: parseInt(process.env.KEYWORD_MAX_LENGTH || '15', 10),
     },
-    preferContextClues: true,
   },
 };

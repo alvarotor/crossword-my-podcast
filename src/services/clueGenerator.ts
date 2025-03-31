@@ -1,62 +1,15 @@
-import { WordNet } from 'natural';
 import axios from 'axios';
 import { config } from '../config';
 
 export class ClueGenerator {
-  private wordnet: WordNet;
-
-  constructor() {
-    this.wordnet = new WordNet(config.wordnet.dataDir);
-  }
 
   async generateClue(word: string, context: string): Promise<string> {
     try {
-      if (config.keyword.preferContextClues) {
-        const contextClue = this.generateContextClue(word, context);
-        if (contextClue) {
-          return contextClue;
-        }
-      }
-
-      const wordnetClue = await this.getWordNetClue(word);
-      if (wordnetClue) {
-        return wordnetClue;
-      }
-
       return await this.generateClueWithAI(word, context);
     } catch (error) {
-      console.error(`Error generating clue for ${word}:`, error);
+      console.error(`Error generating AI clue for ${word}:`, error);
       return await this.getDictionaryDefinition(word) || `Related to podcast content (${word.length} letters)`;
     }
-  }
-
-  private generateContextClue(word: string, context: string): string | null {
-    const sentences = context.split(/[.!?]/).map(s => s.trim());
-    const sentence = sentences.find(s => s.toLowerCase().includes(word.toLowerCase()));
-    if (sentence) {
-      return this.createClueFromSentence(sentence, word);
-    }
-    return "";
-  }
-
-  private createClueFromSentence(sentence: string, word: string): string {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // Match word in all forms
-    return sentence.replace(regex, '_____') + ` (${word.length} letters)`; // Append enumeration
-  }
-
-  private getWordNetClue(word: string): Promise<string | null> {
-    return new Promise((resolve) => {
-      this.wordnet.lookup(word, (results) => {
-        if (results && results.length > 0) {
-          const definitions = results.map(result => result.def).filter(Boolean);
-          if (definitions.length > 0) {
-            resolve(definitions[0]);
-            return;
-          }
-        }
-        resolve(null);
-      });
-    });
   }
 
   private async generateClueWithAI(word: string, context: string): Promise<string> {
@@ -92,16 +45,26 @@ export class ClueGenerator {
       return response.data.choices[0].message.content.trim();
     } catch (error) {
       console.error('Error calling OpenAI API:', error);
-      return "";
+      throw error;
     }
   }
 
   private async getDictionaryDefinition(word: string): Promise<string | null> {
     try {
-      const response = await axios.get<{ meanings: { definitions: { definition: string }[] }[] }[]>(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      interface DictionaryResponse {
+        word: string;
+        meanings: {
+          partOfSpeech: string;
+          definitions: { definition: string }[];
+        }[];
+      }
+
+      const response = await axios.get<DictionaryResponse[]>(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
       if (Array.isArray(response.data) && response.data.length > 0) {
-        const definitions = response.data[0].meanings.flatMap(meaning => meaning.definitions.map(def => def.definition));
-        return definitions.length > 0 ? definitions[0] : null;
+        const firstMeaning = response.data[0].meanings[0];
+        if (firstMeaning && firstMeaning.definitions.length > 0) {
+          return firstMeaning.definitions[0].definition;
+        }
       }
     } catch (error) {
       console.error('Error fetching dictionary definition:', error);

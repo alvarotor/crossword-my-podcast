@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { preprocessTranscript } from '../services/transcriptService';
 import { extractKeywords } from '../services/keywordService';
 import { generateCrosswordLayout } from '../services/crosswordService';
 import { ClueGenerator } from '../services/clueGenerator';
 
-export const generateCrossword = async (req: Request, res: Response) => {
+export const generateCrossword = async (req: string, res: Response) => {
   try {
-    const { transcript } = req.body;
+    const transcript: string = req;
 
     if (!transcript || typeof transcript !== 'string' || transcript.trim().length < 50) {
       return res.status(400).json({ error: 'Transcript must be a valid string with at least 50 characters.' });

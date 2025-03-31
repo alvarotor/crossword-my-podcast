@@ -2,7 +2,10 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .crossword-section {
@@ -16,14 +19,31 @@
     }
 }
 
+.crossword-grid {
+    border-collapse: collapse;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 .crossword-cell {
-    width: 30px;
-    height: 30px;
-    text-align: center;
+    width: 40px;
+    height: 40px;
     border: 1px solid #ccc;
+    position: relative;
+    padding: 0;
+    text-align: center;
     font-size: 16px;
     text-transform: uppercase;
     cursor: pointer;
+}
+
+.crossword-cell.blocked {
+    background-color: #333;
+}
+
+.crossword-cell.highlighted {
+    background-color: #e6f3ff;
 }
 
 .crossword-cell.active {
@@ -37,6 +57,31 @@
 
 .crossword-cell.incorrect {
     background-color: #f8d7da; /* Red for incorrect answers */
+}
+
+.cell-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    color: #666;
+    z-index: 1;
+}
+
+.crossword-cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    padding: 0;
+    background: transparent;
+}
+
+.crossword-cell input:focus {
+    outline: 2px solid #007bff;
+    background-color: #e6f3ff;
 }
 
 .crossword-controls {
@@ -60,6 +105,50 @@
     background-color: #0056b3;
 }
 
+.clues-container {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.clue-list {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.clue-list h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+}
+
+.clue-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.clue-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.clue-list li:hover {
+    background-color: #f5f5f5;
+}
+
+.clue-number {
+    font-weight: bold;
+    margin-right: 8px;
+    color: #007bff;
+}
+
 #clues {
     display: flex;
     flex-direction: column;
@@ -76,6 +165,22 @@
 }
 
 /* Mobile optimizations */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .crossword-cell {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+    
+    .crossword-cell input {
+        font-size: 16px;
+    }
+}
+
 @media (max-width: 767px) {
     .clues.collapsed .clue-list {
         display: none;

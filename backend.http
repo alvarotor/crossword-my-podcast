@@ -1,0 +1,28 @@
+
+### Generate Crossword
+POST http://localhost:3000/generate-crossword
+Content-Type: application/json
+
+{
+  "transcript": "In today's podcast episode, we're diving deep into the fascinating world of crossword puzzles. These brain-teasing games have been entertaining and challenging people for generations. We'll explore how crosswords evolved from simple word squares to the sophisticated puzzles we see today. Many people enjoy solving crosswords during their morning coffee ritual. The intersection of words creates an intricate pattern that makes these puzzles both challenging and rewarding. Let's discuss some strategies for becoming better at solving crosswords."
+}
+
+### Expected Response:
+# {
+#   "crossword": {
+#     "table": [...],
+#     "result": [
+#       {
+#         "answer": "string",
+#         "clue": "string",
+#         "startx": 0,
+#         "starty": 0,
+#         "orientation": "across|down",
+#         "position": 0
+#       }
+#     ],
+#     "rows": 0,
+#     "cols": 0
+#   }
+# }
+
